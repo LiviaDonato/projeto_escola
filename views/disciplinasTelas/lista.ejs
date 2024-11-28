@@ -1,0 +1,49 @@
+<%- include('../includes/header.ejs', {titulo: 'Lista de Disciplinas'}) %>
+<main>
+    <h2>Lista de Disciplinas</h2>
+    <a href="/disciplinas/novo" class="btn btn-primary">Adicionar Disciplina</a>
+    <% if (typeof mensagem != 'undefined') { %>
+        <p class="erro"><%= mensagem %></p>
+    <% } %>
+    <form action="/disciplinas/" method="get" class="form form-consulta">
+        <input type="text" name="busca" placeholder="Buscar disciplina ou professor" value="<%=busca%>">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        <select name="ordenar" onchange="this.form.submit()">
+            <option value="nome_disciplina" <%= ordenar == 'nome_disciplina' ? 'selected' : '' %>>Ordenar por Disciplina</option>
+            <option value="nome_professor" <%= ordenar == 'nome_professor' ? 'selected' : '' %>>Ordenar por Professor</option>
+        </select>
+    </form>
+    <table class="dados-table">
+        <thead>
+            <tr>
+                <th>Disciplina</th>
+                <th>Professor</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (let disciplina of vetorDados) { %>
+                <tr>
+                    <td><%= disciplina.nome_disciplina %></td>
+                    <td><%= disciplina.nome_professor %></td>
+                    <td>
+                        <a href="/disciplinas/<%= disciplina.id_disciplina %>/editar" class="btn btn-edit"> Editar </a>
+                        <form action="/disciplinas/<%= disciplina.id_disciplina %>/deletar" method="post">
+                            <button type="submit" class="btn btn-delete">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+    <div class="pagination">
+        <% if (pgAtual > 1) { %>
+            <a href="/alunos?pg=<%= pgAtual-1 %>">Anterior</a>
+        <% } %>
+        <span>Página <%= pgAtual %> de <%= totalPgs %></span>
+        <% if (pgAtual < totalPgs) { %>
+            <a href="/alunos?pg=<%= pgAtual+1 %>">Próxima</a>
+        <% } %>
+    </div>
+</main>
+<%- include('../includes/footer.ejs') %>

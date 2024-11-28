@@ -1,0 +1,47 @@
+<%- include('../includes/header.ejs', {titulo: 'Lista de Turmas'}) %>
+<main>
+    <h2>Lista de Turmas</h2>
+    <a href="/turmas/novo" class="btn btn-primary">Adicionar Turma</a>
+    <% if (typeof mensagem != 'undefined') { %>
+        <p class="erro"><%= mensagem %></p>
+    <% } %>
+    <form action="/turmas/" method="get" class="form form-consulta">
+        <input type="text" name="busca" placeholder="Buscar turma" value="<%=busca%>">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        <select name="ordenar" onchange="this.form.submit()">
+            <option value="nome_turma asc" <%= ordenar == 'nome_turma asc' ? 'selected' : '' %>>Ordenar de forma crescente</option>
+            <option value="nome_turma desc" <%= ordenar == 'nome_turma desc' ? 'selected' : '' %>>Ordenar de forma decrescente</option>
+        </select>
+    </form>
+    <table class="dados-table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (let turma of turmas_escola) { %>
+                <tr>
+                    <td><%= turma.nome_turma %></td>
+                    <td>
+                        <a href="/turmas/<%= turma.id_turma %>/editar" class="btn btn-edit">Editar</a>
+                        <form action="/turmas/<%= turma.id_turma %>/deletar" method="post">
+                            <button type="submit" class="btn btn-delete">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+    <div class="pagination">
+        <% if (pgAtual > 1) { %>
+            <a href="/turmas?pg=<%= pgAtual-1 %>">Anterior</a>
+        <% } %>
+        <span>Página <%= pgAtual %> de <%= totalPgs %></span>
+        <% if (pgAtual < totalPgs) { %>
+            <a href="/turmas?pg=<%= pgAtual+1 %>">Próxima</a>
+        <% } %>
+    </div>
+</main>
+<%- include('../includes/footer.ejs') %>

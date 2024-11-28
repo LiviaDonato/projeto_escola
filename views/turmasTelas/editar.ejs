@@ -1,0 +1,13 @@
+<%- include('../includes/header.ejs', {titulo: 'Editar Turma'}) %>
+<main>
+    <h2>Editando Turma</h2>
+    <form action="/turmas/<%= turma.id_turma %>/editar" method="post" class="form">
+        <div class="form-group">
+            <label for="nome_turma">Nome da Turma: </label>
+            <input type="text" id="nome_turma" name="nome_turma" value="<%= turma.nome_turma %>" required>
+        </div>
+        <button type="submit" class="btn btn-primary"> Salvar Alterações </button>
+        <a href="/turmas" class="btn btn-secondary"> Cancelar </a>
+    </form>
+</main>
+<%- include('../includes/footer.ejs') %>

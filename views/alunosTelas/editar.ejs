@@ -1,0 +1,145 @@
+<%- include('../includes/header.ejs', { titulo : 'Editar aluno' }) %>
+
+    <main>
+        <h2>Editando aluno <%= aluno.nome %></h2>
+        <div class="container">
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#editar" type="button"
+                        aria-controls="editar" aria-selected="true">
+                        Editar Aluno
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#lancar-notas" type="button"
+                        aria-controls="lancar-notas" aria-selected="false">
+                        Lançar Nota
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="notas-tab" data-bs-toggle="tab" data-bs-target="#notas" type="button"
+                        aria-controls="notas" aria-selected="false">
+                        Notas
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="myTabContent">
+                <!-- Aba para Editar o Aluno -->
+                <div class="tab-pane fade show active p-3" id="editar">
+                    <form action="/alunos/<%= aluno.id_aluno %>/editar" method="POST" class="form">
+                        <div class="form-group">
+                            <label for="nome">Nome da aluno:</label>
+                            <input type="text" id="nome" name="nome" value="<%= aluno.nome %>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="idade">Idade:</label>
+                            <input type="number" id="idade" name="idade" required value="<%= aluno.idade %>">
+                        </div>
+                        <div class="form-group">
+                            <label for="cpf">CPF:</label>
+                            <input type="text" id="cpf" name="cpf" required value="<%= aluno.cpf %>">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required value="<%= aluno.email %>">
+                        </div>
+                        <div class="form-group">
+                            <label for="sexo">Sexo:</label>
+                            <select id="sexo" name="sexo">
+                                <option value="M" <%=aluno.sexo=='M' ? 'selected' : '' %> >Masculino</option>
+                                <option value="F" <%=aluno.sexo=='F' ? 'selected' : '' %> >Feminino</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_turma">Turma:</label>
+                            <select id="id_turma" name="id_turma">
+                                <option>Selecione uma turma</option>
+                                <% for (let turma of turmasCadastradas) { %>
+                                    <option value="<%= turma.id_turma %>" <% if (turma.id_turma==aluno.id_turma) { %>
+                                        selected
+                                        <% } %>
+                                            ><%= turma.nome_turma %>
+                                    </option>
+                                    <% } %>
+            
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary"> Salvar alterações </button>
+                        <a href="/alunos/" class="btn btn-secondary">Cancelar</a>
+            
+                        <% if(typeof mensagem !='undefined' ) { %>
+                            <p class="erro">
+                                <%= mensagem %>
+                            </p>
+                            <% } %>
+                    </form>
+                </div>
+                <!-- Aba para lançar as notas -->
+                <div class="tab-pane fade p-3" id="lancar-notas">
+                    <form action="/alunos/<%= aluno.id_aluno %>/lancar-nota" method="POST" class="form">
+                        <div class="form-group">
+                            <label for="media">Média:</label>
+                            <input type="number" id="media" name="media" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="faltas">Faltas:</label>
+                            <input type="number" id="faltas" name="faltas" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_disciplina">Disciplina:</label>
+                            <select id="id_disciplina" name="id_disciplina">
+                                <option>Selecione uma disciplina</option>
+                                <% for (let disciplina of disciplinasCadastradas) { %>
+                                    <option value="<%= disciplina.id_disciplina %>"><%= disciplina.nome_disciplina %></option>
+                                <% } %>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary"> Gravar </button>
+                        <a href="/alunos/" class="btn btn-secondary">Cancelar</a>
+                
+                        <% if(typeof mensagem !='undefined' ) { %>
+                            <p class="erro">
+                                <%= mensagem %>
+                            </p>
+                            <% } %>
+                    </form>
+                </div>
+                <!-- Aba para exibir as notas -->
+                <div class="tab-pane fade p-3" id="notas">
+                    <h4>Notas</h4>
+                    <table class="dados-table">
+                        <thead>
+                            <tr>
+                                <th>Disciplina</th>
+                                <th>Média</th>
+                                <th>Faltas</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for (let nota of notas) { %>
+                                <tr>
+                                    <td><%= nota.nome_disciplina %></td>
+                                    <td><%= nota.media %></td>
+                                    <td><%= nota.nr_faltas %></td>
+                                        <% if (nota.status == 'Aprovado') { %>
+                                            <td class="text-success"><%= nota.status %> <i class="bi bi-hand-thumbs-up-fill"></i></td>
+                                        <% } %>
+                                        <% if (nota.status == 'Reprovado') { %>
+                                            <td class="text-danger"><%= nota.status %> <i class="bi bi-hand-thumbs-down-fill"></i></td>
+                                        <% } %>
+                                        <% if (nota.status == 'Recuperação') { %>
+                                            <td class="text-warning"><%= nota.status %> <i class="bi bi-hand-index-thumb-fill"></i></td>
+                                        <% } %>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+<%- include('../includes/footer.ejs') %>
